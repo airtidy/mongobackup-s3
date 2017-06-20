@@ -3,7 +3,8 @@
 function restore {
   aws s3api get-object --bucket $S3BUCKET --key $FILE thebackup
   tar -zxvf thebackup -C /backup
-  mongorestore -h $MONGO_HOST -p $MONGO_PORT dump/
+  echo "Applying backup to $MONGO_HOST:$MONGO_PORT"
+  mongorestore --host $MONGO_HOST --port $MONGO_PORT dump/
   echo "Cleaning up..."
   rm -rf dump/ thebackup
 }
@@ -70,6 +71,7 @@ elif [ "$1" == "latest" ]; then
   echo "Determining backup to restore..."
 
   : ${FILE:=$(aws s3 ls s3://$S3BUCKET/$FILEPREFIX | awk -F " " '{print $4}' | sort -r | head -n1)}
+  FILE=$FILEPREFIX$FILE
   echo "Restoring $FILE."
   restore
 else
