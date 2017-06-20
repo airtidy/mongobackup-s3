@@ -1,11 +1,11 @@
 #!/bin/bash
 
 function restore {
-  aws s3api get-object --bucket $S3BUCKET --key $FILE /backup/$FILE
-  tar -zxvf /backup/$FILE -C /backup
+  aws s3api get-object --bucket $S3BUCKET --key $FILE thebackup
+  tar -zxvf thebackup -C /backup
   mongorestore -h $MONGO_HOST -p $MONGO_PORT dump/
   echo "Cleaning up..."
-  rm -rf dump/ /backup/$FILE
+  rm -rf dump/ thebackup
 }
 
 if [ -z "$AWS_ACCESS_KEY_ID" ]; then
