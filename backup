@@ -54,7 +54,8 @@ if [ "$1" == "backup" ]; then
 
   DATE=$(date +$DATEFORMAT)
   FILENAME=$FILEPREFIX$DATE.tar.gz
-  FILE=/backup/backup-$FILENAME
+  FILE=thebackup
+  
 
   mongodump --quiet -h $MONGO_HOST -p $MONGO_PORT $DB_ARG
   tar -zcvf $FILE dump/
