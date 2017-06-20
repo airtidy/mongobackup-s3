@@ -69,7 +69,7 @@ elif [ "$1" == "list" ]; then
 elif [ "$1" == "latest" ]; then
   echo "Determining backup to restore..."
 
-  : ${FILE:=$(aws s3 ls s3://$S3BUCKET | awk -F " " '{print $4}' | grep ^$FILEPREFIX | sort -r | head -n1)}
+  : ${FILE:=$(aws s3 ls s3://$S3BUCKET/$FILEPREFIX | awk -F " " '{print $4}' | sort -r | head -n1)}
   echo "Restoring $FILE."
   restore
 else
