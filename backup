@@ -82,7 +82,7 @@ if [ "$1" == "backup" ]; then
 
 elif [ "$1" == "rolling" ]; then
 
-  sleep $ROLLBACKUP_START_MIN_DELAY
+  sleep "$ROLLBACKUP_START_MIN_DELAY"
 
   echo "$CRONEXPR root cd /backup && ./run backup >> /var/log/cron.log 2>&1" > /etc/cron.d/backup-cron
   echo "" >> /etc/cron.d/backup-cron
