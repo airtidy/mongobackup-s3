@@ -44,6 +44,14 @@ if [ "$INIT_REPLSET" == "YES" ]; then
   mongo $MONGO_HOST/rocketchat --eval "rs.initiate()"
 fi
 
+if [[ -z "$CRONEXPR" ]]; then
+  CRONEXPR="0 0 * * *"
+fi
+
+if [[ -z "$ROLLBACKUP_START_MIN_DELAY" ]]; then
+  ROLLBACKUP_START_MIN_DELAY=3600
+fi
+
 #support for legacy env vars
 if [[ -n "$MONGO_PORT_27017_TCP_ADDR" ]]; then
   MONGO_HOST=$MONGO_PORT_27017_TCP_ADDR
@@ -57,13 +65,6 @@ if [[ -n "$DB" ]]; then
   DB_ARG="--db $DB"
 fi
 
-if [[ -n "$CRONEXPR" ]]; then
-  CRONEXPR="0 0 * * *"
-fi
-
-if [[ -n "$ROLLBACKUP_START_MIN_DELAY" ]]; then
-  ROLLBACKUP_START_MIN_DELAY=3600
-fi
 
 if [ "$1" == "backup" ]; then
   echo "Starting backup..."
