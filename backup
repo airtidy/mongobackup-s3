@@ -57,6 +57,14 @@ if [[ -n "$DB" ]]; then
   DB_ARG="--db $DB"
 fi
 
+if [[ -n "$CRONEXPR" ]]; then
+  CRONEXPR="0 0 * * *"
+fi
+
+if [[ -n "$ROLLBACKUP_START_MIN_DELAY" ]]; then
+  ROLLBACKUP_START_MIN_DELAY=3600
+fi
+
 if [ "$1" == "backup" ]; then
   echo "Starting backup..."
 
@@ -70,6 +78,20 @@ if [ "$1" == "backup" ]; then
   aws s3api put-object --bucket $S3BUCKET --key $FILENAME --body $FILE
   echo "Cleaning up..."
   rm -rf dump/ $FILE
+
+elif [ "$1" == "rolling" ]; then
+
+  sleep $ROLLBACKUP_START_MIN_DELAY
+
+  echo "$CRONEXPR root cd /backup && ./run backup >> /var/log/cron.log 2>&1" > /etc/cron.d/backup-cron
+  echo "" >> /etc/cron.d/backup-cron
+
+  service rsyslog restart
+  chmod 775 /var/log
+  touch /var/log/cron.log
+
+  cron && tail -f /var/log/cron.log
+
 elif [ "$1" == "list" ]; then
   echo "Listing backups..."
 
