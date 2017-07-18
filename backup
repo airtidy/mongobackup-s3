@@ -84,7 +84,8 @@ elif [ "$1" == "rolling" ]; then
 
   sleep "$ROLLBACKUP_START_MIN_DELAY"
 
-  echo "$CRONEXPR root cd /backup && ./run backup >> /var/log/cron.log 2>&1" > /etc/cron.d/backup-cron
+  env > /etc/cron.d/backup-cron
+  echo "$CRONEXPR root cd /backup && ./run backup >> /var/log/cron.log 2>&1" >> /etc/cron.d/backup-cron
   echo "" >> /etc/cron.d/backup-cron
 
   service rsyslog restart
